@@ -1,0 +1,31 @@
+---
+- name: Deploy Flask App Container
+  hosts: local
+  become: true
+  vars:
+    image_tag: "latest"
+    registry: "localhost:8082"
+    image_name: "flask-app"
+    container_name: "flask-app-container"
+    host_port: 5000
+    container_port: 5000
+
+  tasks:
+    - name: Pull image from Nexus registry
+      docker_image:
+        name: "{{ registry }}/{{ image_name }}:{{ image_tag }}"
+        source: pull
+
+    - name: Stop and remove old container if exists
+      docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Run new Flask container
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ registry }}/{{ image_name }}:{{ image_tag }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ host_port }}:{{ container_port }}"
