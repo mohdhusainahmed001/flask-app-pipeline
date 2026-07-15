@@ -48,15 +48,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh '''
-                        . venv/bin/activate
-                        pip install pysonar-scanner || true
-                        sonar-scanner \
-                          -Dsonar.projectKey=flask-app \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.login=$SONAR_AUTH_TOKEN
-                    '''
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                              -Dsonar.projectKey=flask-app \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=\$SONAR_HOST_URL \
+                              -Dsonar.login=\$SONAR_AUTH_TOKEN
+                        """
+                    }
                 }
             }
         }
