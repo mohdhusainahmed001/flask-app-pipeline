@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE       = "flask-app"
         DOCKER_TAG         = "${BUILD_NUMBER}"
-        NEXUS_URL          = "nexus:8082"                      // docker-hosted repo (container name, not localhost)
+        NEXUS_URL          = "localhost:8082"                      // docker-hosted repo (container name, not localhost)
         NEXUS_REPO         = "docker-hosted"
         NEXUS_PYPI_URL     = "http://nexus:8081/repository/pypi-hosted/"
         SONARQUBE_ENV      = "SonarQubeServer"                 // must match name configured in Manage Jenkins > System
